@@ -34,7 +34,7 @@ export default function IndexPage() {
     },
   ];
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen w-full mb-10 md:mb-0 bg-gray-50">
       {/* svg triangle header */}
       <div className="flex w-full h-40">
         <svg
@@ -55,9 +55,9 @@ export default function IndexPage() {
         </svg>
       </div>
       {/* main content container */}
-      <div className="flex flex-row w-full fixed top-6 justify-center space-x-16 ">
+      <div className="flex flex-col md:flex-row w-full -mt-32 justify-center space-y-10 md:space-x-16 ">
         {/* sortable post list */}
-        <div className="flex flex-col w-5/12">
+        <div className="flex flex-col w-11/12 md:w-5/12 mx-auto md:mx-0 ">
           <h3 className="text-2xl text-white font-semibold">
             Sortable Post List
           </h3>
@@ -106,15 +106,15 @@ export default function IndexPage() {
           </ul>
         </div>
         {/* actions list */}
-        <div className="flex flex-col w-5/12 bg-gray-100 rounded-md shadow-2xl h-5/6">
+        <div className="flex flex-col w-11/12 md:w-5/12 mx-auto md:mx-0 bg-gray-100 rounded-md shadow-2xl h-5/6">
           <h3 className="text-xl text-gray-600 font-semibold mt-4 ml-6">
             List of actions committed
           </h3>
-          <ul className="flex flex-col flex-nowrap space-y-1 mt-8 pt-8 pb-8 pl-2 pr-2 bg-gray-200">
+          <ul className="flex flex-col flex-nowrap space-y-1 mt-8 py-0 px-0 md:py-8 md:px-2 bg-gray-200">
             {actionsArray.map(({ id, title }, index) => (
               <li
                 key={id}
-                className="flex flex-row flex-nowrap justify-between items-center w-11/12 mx-auto h-20 p-2 text-gray-500 bg-white rounded-md shadow-xl"
+                className="flex flex-row flex-nowrap justify-between items-center w-full md:w-11/12 mx-auto h-20 p-2 text-gray-500 bg-white rounded-md shadow-xl"
               >
                 <div>
                   <h3>{title}</h3>
@@ -122,7 +122,7 @@ export default function IndexPage() {
                 <div className="flex flex-col flex-nowrap space-y-4">
                   <button
                     type="button"
-                    className="bg-green-400 text-gray-900 h-12 w-32 rounded-md"
+                    className="bg-green-400 text-gray-900 h-12 w-32 rounded-md transform hover:scale-105 focus:outline-none"
                   >
                     Time Travel
                   </button>
