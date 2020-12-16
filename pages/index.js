@@ -1,27 +1,15 @@
+import { useState, useEffect, useContext } from "react";
+import { fetchPosts } from "../api/fetchPosts";
+import { PostsContext } from "../components/globalState";
+import LoaderImage from "../assets/bars.svg";
+
 export default function IndexPage() {
-  let dataArray = [
-    {
-      id: 1,
-      title:
-        "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-    },
-    {
-      id: 2,
-      title: "qui est esse",
-    },
-    {
-      id: 3,
-      title: "ea molestias quasi exercitationem repellat qui ipsa sit aut",
-    },
-    {
-      id: 4,
-      title: "eum et est occaecati",
-    },
-    {
-      id: 5,
-      title: "nesciunt quas odio",
-    },
-  ];
+  const [loading, setLoading] = useState(false);
+  // get data and dispatch from context
+  const {
+    Posts: { Present },
+    dispatchPosts,
+  } = useContext(PostsContext);
 
   let actionsArray = [
     {
@@ -33,6 +21,41 @@ export default function IndexPage() {
       title: "moved 2 to 3",
     },
   ];
+
+  useEffect(() => {
+    // start loading
+    setLoading(true);
+    // fetch all posts for given userId
+    fetchPosts()
+      // then filter for only the first 5
+      .then((posts) => posts.filter((_, index) => index < 5))
+      // then dispatch to global context
+      .then((data) => {
+        dispatchPosts({
+          type: "INITIAL_FETCH",
+          payload: data,
+        });
+        // finish loading
+        setLoading(false);
+      });
+  }, []);
+
+  // move list items up or down
+  const moveListItem = (direction, current_index) => {
+    if (direction === "UP") {
+      // dispatch action MOVE_UP with new index less with one
+      return dispatchPosts({
+        type: "MOVE_UP",
+        payload: { index1: current_index, index2: current_index - 1 },
+      });
+    }
+    // dispatch action MOVE_DOWN with new index more with one
+    return dispatchPosts({
+      type: "MOVE_DOWN",
+      payload: { index1: current_index, index2: current_index + 1 },
+    });
+  };
+
   return (
     <div className="flex flex-col min-h-screen w-full mb-10 md:mb-0 bg-gray-50">
       {/* svg triangle header */}
@@ -62,47 +85,59 @@ export default function IndexPage() {
             Sortable Post List
           </h3>
           <ul className="flex flex-col flex-nowrap space-y-6 mt-4">
-            {dataArray.map(({ id, title }, index) => (
-              <li
-                key={id}
-                className="flex flex-row flex-nowrap justify-between w-full h-20 items-center p-2 text-gray-600 bg-white rounded-md shadow-xl"
-              >
-                <div>
-                  <h3>{`${id}: ${title}`}</h3>
-                </div>
-                <div className="flex flex-col flex-nowrap space-y-4">
-                  {index !== 0 && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="text-purple-900 w-5 h-5 transform cursor-pointer hover:scale-125"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  )}
-
-                  {index !== dataArray.length - 1 && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      className="text-purple-900 w-5 h-5 transform cursor-pointer hover:scale-125"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  )}
-                </div>
-              </li>
-            ))}
+            {/* show loader when loading */}
+            {loading ? (
+              <img
+                className="flex w-4/12 h-3/6 md:w-8/12 md:h-3/6 mx-auto mt-6 md:my-auto"
+                src={LoaderImage}
+                alt="loader indicator"
+              />
+            ) : (
+              Present.map(({ id, title }, index) => (
+                <li
+                  key={id}
+                  className="flex flex-row flex-nowrap justify-between w-full h-20 items-center p-2 text-gray-600 bg-white rounded-md shadow-xl"
+                >
+                  <div>
+                    <h3>{`${id}: ${title}`}</h3>
+                  </div>
+                  <div className="flex flex-col flex-nowrap space-y-4">
+                    {/* key up */}
+                    {index !== 0 && (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="text-purple-900 w-5 h-5 transform cursor-pointer hover:scale-125"
+                        onClick={() => moveListItem("UP", index)}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                    {/* key down */}
+                    {index !== Present.length - 1 && (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="text-purple-900 w-5 h-5 transform cursor-pointer hover:scale-125"
+                        onClick={() => moveListItem("DOWN", index)}
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </li>
+              ))
+            )}
           </ul>
         </div>
         {/* actions list */}
