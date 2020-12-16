@@ -45,7 +45,7 @@ export default function IndexPage() {
       </div>
       {/* sortable post list */}
       <div className="flex flex-col w-4/12 ml-8 fixed top-6">
-        <h3 className="text-xl text-white">Sortable Post List</h3>
+        <h3 className="text-2xl text-white font-semibold">Sortable Post List</h3>
         <ul className="flex flex-col flex-nowrap space-y-6 mt-4">
           {dataArray.map(({ id, title }, index) => (
             <li
