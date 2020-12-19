@@ -5,7 +5,7 @@ import LoaderImage from "../assets/bars.svg";
 
 export default function IndexPage() {
   const [loading, setLoading] = useState(false);
-  // get data and dispatch from context
+  // get past and present arrays and dispatchPosts fn from context
   const {
     Posts: { Present, Past },
     dispatchPosts,
@@ -26,21 +26,27 @@ export default function IndexPage() {
         });
         // finish loading
         setLoading(false);
+      })
+      // catch error
+      .catch((error) => {
+        alert(error);
+        // finish loading
+        setLoading(false);
       });
   }, []);
 
   // move list items up or down
   const moveListItem = (direction, current_index) => {
     if (direction === "UP") {
-      // dispatch action MOVE_UP with new index less with one
+      // dispatch action MOVE_UP_AND_DOWN with new index less with one
       return dispatchPosts({
-        type: "MOVE_UP",
+        type: "MOVE_UP_AND_DOWN",
         payload: { index1: current_index, index2: current_index - 1 },
       });
     }
-    // dispatch action MOVE_DOWN with new index more with one
+    // dispatch action MOVE_UP_AND_DOWN with new index more with one
     return dispatchPosts({
-      type: "MOVE_DOWN",
+      type: "MOVE_UP_AND_DOWN",
       payload: { index1: current_index, index2: current_index + 1 },
     });
   };
@@ -131,18 +137,26 @@ export default function IndexPage() {
         </div>
         {/* actions list */}
         <div className="flex flex-col w-11/12 md:w-5/12 mx-auto md:mx-0 bg-gray-100 rounded-md shadow-2xl h-5/6">
-          <h3 className="text-xl text-gray-600 font-semibold mt-4 ml-6">
-            List of actions committed
-          </h3>
-          <ul className="flex flex-col flex-nowrap space-y-1 mt-8 py-0 px-0 md:py-8 md:px-2 bg-gray-200 max-h-96 overflow-y-scroll">
-            {/* the order is Latest actions to Oldest actions */}
-            {/* compare last item pushed to Past array (immediate past 'present array') with current Present Array */}
+          <div className="flex flex-col flex-nowrap mx-auto md:mx-0 md:w-10/12 md:ml-6">
+            <h3 className="text-xl text-gray-600 font-semibold mt-4">
+              List of actions committed
+            </h3>
+            <h6 className="text-sm text-gray-500">
+              Ordered from latest to first
+            </h6>
+          </div>
+
+          <ul className="flex flex-col flex-nowrap space-y-1 mt-8 py-0 px-0 md:py-8 md:px-2 bg-gray-200 min-h-24 max-h-96 overflow-y-scroll">
+            {/* the order of Past array is oldest actions(index 0) to latest actions(index Past.length-1) */}
+            {/* compare last item pushed to Past array (index Past.length-1) */}
+            {/* which is the immediate former 'present array' */}
+            {/* with current Present Array */}
             {/* check if Past array has at least an entry and the entry is not empty */}
-            {Past?.[Past.length - 1]?.length &&
+            {Past[Past.length - 1]?.length &&
               Past[Past.length - 1].map((immediateLatest, index) => {
-                // if item at current index in immediate latest
-                // is not the same as item in the same index in current latest
-                // mark as change
+                // if item at current index in Present (Present[index])
+                // is not the same as item in the same index in Past (Past[Past.length -1][index])
+                // mark as changed
                 if (immediateLatest.id !== Present[index]["id"]) {
                   return (
                     <li
@@ -150,23 +164,29 @@ export default function IndexPage() {
                       className="flex flex-row flex-nowrap justify-between items-center w-full md:w-11/12 mx-auto h-20 p-2 text-gray-500 bg-white rounded-md shadow-xl"
                     >
                       <div>
-                        {/* moved from current id in Past array to id of the same item in the present array */}
+                        {/* moved from current index in Past array to index of the same item in the Present array */}
                         <h3>{`moved post ${
                           immediateLatest.id
                         } from index ${index} to index ${Present.findIndex(
                           (entry) => entry.id === immediateLatest.id
-                        )} by1`}</h3>
+                        )}`}</h3>
                       </div>
                       <div className="flex flex-col flex-nowrap space-y-4">
                         <button
                           type="button"
                           className="bg-green-400 text-gray-900 h-12 w-32 rounded-md transform hover:scale-105 focus:outline-none"
                           onClick={() => {
-                            // dispatch previous state to be pushed to present
+                            // time travel button
+                            // dispatches previous state (in Past) to be pushed to Present
+
+                            // Nb:
+                            // The latest action is the last item in the Past array (Past[Past.length-1])
+                            // and so it's index 0 in the reversed Past array (Past.reverse()[0])
                             dispatchPosts({
                               type: "TIME_TRAVEL",
                               payload: {
-                                pastState: Past[Past.length - 1],
+                                formerState: Past[Past.length - 1],
+                                indexInReversePast: 0,
                               },
                             });
                           }}
@@ -178,20 +198,27 @@ export default function IndexPage() {
                   );
                 }
               })}
-            {/* reverse the array to get the immediate latest states first before the earlier states */}
+
+            {/* compare former Past states against their subsequent ones (index-1) for older changes */}
+            {/* Check if Past has at least two items and last item is not empty  */}
             {Past.length > 1 &&
-              // returns latest array item to be pushed to past
-              // (earlier rep of Present)
-              Past.reverse().map((latestState, index) => {
-                // don't map last item because no last item +1 to compare against
+              Past[Past.length - 1].length &&
+              // reverse the array to map from the immediate latest states first before the older former states
+              // Nb: Past array is ordered from oldest actions(index 0) to latest actions(index Past.length-1)
+              // shallow copy instead of reversing original because reverse() mutates the original array
+              [...Past].reverse().map((latestState, index) => {
+                // don't map last item because no item +1 to compare against
                 if (index !== Past.length - 1) {
                   return (
                     <React.Fragment key={index}>
-                      {/* returns individual entries in immediate former Present array */}
+                      {/* Nested maps because Past is an array of arrays */}
                       {latestState.map((currentIndex, i) => {
+                        // if item at current index in Past[index]
+                        // is not the same as item in the same index in Past[index-1] (Past[index+1] in reversed Past)
+                        // mark as changed
                         if (
                           currentIndex.id !==
-                          Past.reverse()[index + 1]?.[i]?.["id"]
+                          [...Past].reverse()[index + 1]?.[i]?.["id"]
                         ) {
                           return (
                             <li
@@ -199,24 +226,27 @@ export default function IndexPage() {
                               className="flex flex-row flex-nowrap justify-between items-center w-full md:w-11/12 mx-auto h-20 p-2 text-gray-500 bg-white rounded-md shadow-xl"
                             >
                               <div>
+                                {/* moved from Past[index-1][currentIndex] to Past[index][findIndex(item at currentIndex)] */}
                                 <h3>{`moved post ${
                                   currentIndex.id
-                                } from index ${Past.reverse()[
-                                  index + 1
-                                ].findIndex(
-                                  (entry) => entry.id === currentIndex.id
-                                )} to index ${index} by2`}</h3>
+                                } from index ${[...Past]
+                                  .reverse()
+                                  [index + 1].findIndex(
+                                    (entry) => entry.id === currentIndex.id
+                                  )} to index ${i}`}</h3>
                               </div>
                               <div className="flex flex-col flex-nowrap space-y-4">
                                 <button
                                   type="button"
                                   className="bg-green-400 text-gray-900 h-12 w-32 rounded-md transform hover:scale-105 focus:outline-none"
                                   onClick={() => {
-                                    // dispatch previous state to be pushed to present
+                                    // time travel button
+                                    // dispatches previous state (in Past) to be pushed to Present
                                     dispatchPosts({
                                       type: "TIME_TRAVEL",
                                       payload: {
-                                        pastState: latestState,
+                                        formerState: latestState,
+                                        indexInReversePast: index,
                                       },
                                     });
                                   }}
