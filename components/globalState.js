@@ -32,14 +32,31 @@ export function PostsContextProvider({ children }) {
         const { index1, index2 } = action.payload;
         // get new array
         let newArray = swapArrayIndexes(state.Present, index1, index2);
-        return { ...state, Past: state.Present, Present: newArray };
+        return {
+          Past: [...state.Past, state.Present],
+          Present: newArray,
+        };
       }
       case "MOVE_UP": {
         // de-structure indexes to swap from payload
         const { index1, index2 } = action.payload;
         // get new array
         let newArray = swapArrayIndexes(state.Present, index1, index2);
-        return { ...state, Past: state.Present, Present: newArray };
+        return {
+          Past: [...state.Past, state.Present],
+          Present: newArray,
+        };
+      }
+      case "TIME_TRAVEL": {
+        // de-structure past state to push to present from payload
+        const { pastState } = action.payload;
+
+        let bufferArray = produce(pastState, () => {});
+
+        return {
+          Past: [...state.Past, state.Present],
+          Present: bufferArray,
+        };
       }
       default:
         throw new Error("dispatched wrong action type");
