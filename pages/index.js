@@ -1,7 +1,8 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { fetchPosts } from "../api/fetchPosts";
 import { PostsContext } from "../components/globalState";
 import LoaderImage from "../assets/bars.svg";
+import { useSprings, animated } from "react-spring";
 
 export default function IndexPage() {
   const [loading, setLoading] = useState(false);
@@ -10,6 +11,9 @@ export default function IndexPage() {
     Posts: { Present, Past },
     dispatchPosts,
   } = useContext(PostsContext);
+
+  // Store indices as a local ref, this represents the item order
+  const pastArrayOrder = useRef(Present.map((_, index) => index));
 
   useEffect(() => {
     // start loading
@@ -37,6 +41,9 @@ export default function IndexPage() {
 
   // move list items up or down
   const moveListItem = (direction, current_index) => {
+    // Update springs animation with new props
+    setSprings(updateSprings(current_index));
+
     if (direction === "UP") {
       // dispatch action MOVE_UP_AND_DOWN with new index less with one
       return dispatchPosts({
@@ -44,12 +51,41 @@ export default function IndexPage() {
         payload: { index1: current_index, index2: current_index - 1 },
       });
     }
+
     // dispatch action MOVE_UP_AND_DOWN with new index more with one
     return dispatchPosts({
       type: "MOVE_UP_AND_DOWN",
       payload: { index1: current_index, index2: current_index + 1 },
     });
   };
+
+  // determines which items are animated
+  const updateSprings = (originalIndex) => (index) =>
+    index === originalIndex
+      ? {
+          opacity: 1,
+          scale: 1,
+          transform: "translate3d(0,0px,0)",
+          shadow: 1,
+          from: {
+            opacity: 0,
+            scale: 0.9,
+            transform: "translate3d(0,-40px,0)",
+            shadow: 15,
+          },
+        }
+      : {
+          opacity: 1,
+          scale: 1,
+          transform: "translate3d(0,0px,0)",
+          shadow: 1,
+        };
+
+  // set springs animation on list items
+  const [springs, setSprings] = useSprings(
+    Present.length,
+    updateSprings(pastArrayOrder.current)
+  );
 
   return (
     <div className="flex flex-col min-h-screen w-full mb-10 md:mb-0 bg-gray-50">
@@ -88,13 +124,14 @@ export default function IndexPage() {
                 alt="loader indicator"
               />
             ) : (
-              Present.map(({ id, title }, index) => (
-                <li
-                  key={id}
+              springs.map((props, index) => (
+                <animated.li
+                  key={Present[index].id}
                   className="flex flex-row flex-nowrap justify-between w-full h-20 items-center p-2 text-gray-600 bg-white rounded-md shadow-xl"
+                  style={props}
                 >
                   <div>
-                    <h3>{`${id}: ${title}`}</h3>
+                    <h3>{`${Present[index].id}: ${Present[index].title}`}</h3>
                   </div>
                   <div className="flex flex-col flex-nowrap space-y-4">
                     {/* key up */}
@@ -130,7 +167,7 @@ export default function IndexPage() {
                       </svg>
                     )}
                   </div>
-                </li>
+                </animated.li>
               ))
             )}
           </ul>
@@ -152,7 +189,7 @@ export default function IndexPage() {
             {/* which is the immediate former 'present array' */}
             {/* with current Present Array */}
             {/* check if Past array has at least an entry and the entry is not empty */}
-            {Past[Past.length - 1]?.length &&
+            {Past?.[Past.length - 1]?.length &&
               // return only one item for the possible 2 when you swap array indices
               // e.g if you move index 0 to index 1 you also move index 1 to index 0
               [
@@ -186,6 +223,15 @@ export default function IndexPage() {
                       onClick={() => {
                         // time travel button
                         // dispatches previous state (in Past) to be pushed to Present
+
+                        // Update springs animation with new props
+                        setSprings(
+                          updateSprings(
+                            Past[Past.length - 1].findIndex(
+                              (entry) => entry.id === immediateLatest.id
+                            )
+                          )
+                        );
 
                         // Nb:
                         // The latest action is the last item in the Past array (Past[Past.length-1])
@@ -257,6 +303,19 @@ export default function IndexPage() {
                                 onClick={() => {
                                   // time travel button
                                   // dispatches previous state (in Past) to be pushed to Present
+
+                                  // Update springs animation with new props
+                                  setSprings(
+                                    updateSprings(
+                                      [...Past]
+                                        .reverse()
+                                        [index + 1].findIndex(
+                                          (entry) =>
+                                            entry.id === currentIndex.id
+                                        )
+                                    )
+                                  );
+
                                   dispatchPosts({
                                     type: "TIME_TRAVEL",
                                     payload: {
