@@ -12,13 +12,10 @@ export default function IndexPage() {
     dispatchPosts,
   } = useContext(PostsContext);
 
-  // Store indices as a local ref, this represents the item order
-  const pastArrayOrder = useRef(Present.map((_, index) => index));
-
+  // fetch all posts for given userId on mount
   useEffect(() => {
     // start loading
     setLoading(true);
-    // fetch all posts for given userId
     fetchPosts()
       // then filter for only the first 5
       .then((posts) => posts.filter((_, index) => index < 5))
@@ -80,6 +77,9 @@ export default function IndexPage() {
           transform: "translate3d(0,0px,0)",
           shadow: 1,
         };
+
+  // Store indices as a local ref, this represents the item order
+  const pastArrayOrder = useRef(Present.map((_, index) => index));
 
   // set springs animation on list items
   const [springs, setSprings] = useSprings(
