@@ -153,51 +153,57 @@ export default function IndexPage() {
             {/* with current Present Array */}
             {/* check if Past array has at least an entry and the entry is not empty */}
             {Past[Past.length - 1]?.length &&
-              Past[Past.length - 1].map((immediateLatest, index) => {
-                // if item at current index in Present (Present[index])
-                // is not the same as item in the same index in Past (Past[Past.length -1][index])
-                // mark as changed
-                if (immediateLatest.id !== Present[index]["id"]) {
-                  return (
-                    <li
-                      key={immediateLatest.id}
-                      className="flex flex-row flex-nowrap justify-between items-center w-full md:w-11/12 mx-auto h-20 p-2 text-gray-500 bg-white rounded-md shadow-xl"
-                    >
-                      <div>
-                        {/* moved from current index in Past array to index of the same item in the Present array */}
-                        <h3>{`moved post ${
-                          immediateLatest.id
-                        } from index ${index} to index ${Present.findIndex(
-                          (entry) => entry.id === immediateLatest.id
-                        )}`}</h3>
-                      </div>
-                      <div className="flex flex-col flex-nowrap space-y-4">
-                        <button
-                          type="button"
-                          className="bg-green-400 text-gray-900 h-12 w-32 rounded-md transform hover:scale-105 focus:outline-none"
-                          onClick={() => {
-                            // time travel button
-                            // dispatches previous state (in Past) to be pushed to Present
+              // return only one item for the possible 2 when you swap array indices
+              // e.g if you move index 0 to index 1 you also move index 1 to index 0
+              [
+                // find() returns the first item that matches a condition
+                Past[Past.length - 1].find(
+                  // if item at current index in Present (Present[index])
+                  // is not the same as item in the same index in Past (Past[Past.length -1][index])
+                  // mark as changed
+                  (immediateLatest, index) =>
+                    immediateLatest.id !== Present[index]["id"]
+                ),
+              ].map((immediateLatest) => (
+                <li
+                  key={immediateLatest.id}
+                  className="flex flex-row flex-nowrap justify-between items-center w-full md:w-11/12 mx-auto h-20 p-2 text-gray-500 bg-white rounded-md shadow-xl"
+                >
+                  <div>
+                    {/* moved from current index in Past array to index of the same item in the Present array */}
+                    <h3>{`moved post ${immediateLatest.id} from index ${Past[
+                      Past.length - 1
+                    ].findIndex(
+                      (entry) => entry.id === immediateLatest.id
+                    )} to index ${Present.findIndex(
+                      (entry) => entry.id === immediateLatest.id
+                    )}`}</h3>
+                  </div>
+                  <div className="flex flex-col flex-nowrap space-y-4">
+                    <button
+                      type="button"
+                      className="bg-green-400 text-gray-900 h-12 w-32 rounded-md transform hover:scale-105 focus:outline-none"
+                      onClick={() => {
+                        // time travel button
+                        // dispatches previous state (in Past) to be pushed to Present
 
-                            // Nb:
-                            // The latest action is the last item in the Past array (Past[Past.length-1])
-                            // and so it's index 0 in the reversed Past array (Past.reverse()[0])
-                            dispatchPosts({
-                              type: "TIME_TRAVEL",
-                              payload: {
-                                formerState: Past[Past.length - 1],
-                                indexInReversePast: 0,
-                              },
-                            });
-                          }}
-                        >
-                          Time Travel
-                        </button>
-                      </div>
-                    </li>
-                  );
-                }
-              })}
+                        // Nb:
+                        // The latest action is the last item in the Past array (Past[Past.length-1])
+                        // and so it's index 0 in the reversed Past array (Past.reverse()[0])
+                        dispatchPosts({
+                          type: "TIME_TRAVEL",
+                          payload: {
+                            formerState: Past[Past.length - 1],
+                            indexInReversePast: 0,
+                          },
+                        });
+                      }}
+                    >
+                      Time Travel
+                    </button>
+                  </div>
+                </li>
+              ))}
 
             {/* compare former Past states against their subsequent ones (index-1) for older changes */}
             {/* Check if Past has at least two items and last item is not empty  */}
@@ -212,52 +218,60 @@ export default function IndexPage() {
                   return (
                     <React.Fragment key={index}>
                       {/* Nested maps because Past is an array of arrays */}
-                      {latestState.map((currentIndex, i) => {
-                        // if item at current index in Past[index]
-                        // is not the same as item in the same index in Past[index-1] (Past[index+1] in reversed Past)
-                        // mark as changed
-                        if (
-                          currentIndex.id !==
-                          [...Past].reverse()[index + 1]?.[i]?.["id"]
-                        ) {
-                          return (
-                            <li
-                              key={currentIndex.id}
-                              className="flex flex-row flex-nowrap justify-between items-center w-full md:w-11/12 mx-auto h-20 p-2 text-gray-500 bg-white rounded-md shadow-xl"
-                            >
-                              <div>
-                                {/* moved from Past[index-1][currentIndex] to Past[index][findIndex(item at currentIndex)] */}
-                                <h3>{`moved post ${
-                                  currentIndex.id
-                                } from index ${[...Past]
-                                  .reverse()
-                                  [index + 1].findIndex(
-                                    (entry) => entry.id === currentIndex.id
-                                  )} to index ${i}`}</h3>
-                              </div>
-                              <div className="flex flex-col flex-nowrap space-y-4">
-                                <button
-                                  type="button"
-                                  className="bg-green-400 text-gray-900 h-12 w-32 rounded-md transform hover:scale-105 focus:outline-none"
-                                  onClick={() => {
-                                    // time travel button
-                                    // dispatches previous state (in Past) to be pushed to Present
-                                    dispatchPosts({
-                                      type: "TIME_TRAVEL",
-                                      payload: {
-                                        formerState: latestState,
-                                        indexInReversePast: index,
-                                      },
-                                    });
-                                  }}
-                                >
-                                  Time Travel
-                                </button>
-                              </div>
-                            </li>
-                          );
-                        }
-                      })}
+                      {
+                        // return only one item for the possible 2 when you swap array indices
+                        // e.g if you move index 0 to index 1 you also move index 1 to index 0
+                        [
+                          // find() returns the first item that matches a condition
+                          latestState.find(
+                            // if item at current index in Past[index]
+                            // is not the same as item in the same index in Past[index-1] (Past[index+1] in reversed Past)
+                            // mark as changed
+                            (currentIndex, i) =>
+                              currentIndex.id !==
+                              [...Past].reverse()[index + 1]?.[i]?.["id"]
+                          ),
+                        ].map((currentIndex) => (
+                          <li
+                            key={currentIndex.id}
+                            className="flex flex-row flex-nowrap justify-between items-center w-full md:w-11/12 mx-auto h-20 p-2 text-gray-500 bg-white rounded-md shadow-xl"
+                          >
+                            <div>
+                              {/* moved from Past[index-1][currentIndex] to Past[index][findIndex(item at currentIndex)] */}
+                              <h3>{`moved post ${currentIndex.id} from index ${[
+                                ...Past,
+                              ]
+                                .reverse()
+                                [index + 1].findIndex(
+                                  (entry) => entry.id === currentIndex.id
+                                )} to index ${[...Past]
+                                .reverse()
+                                [index].findIndex(
+                                  (entry) => entry.id === currentIndex.id
+                                )}`}</h3>
+                            </div>
+                            <div className="flex flex-col flex-nowrap space-y-4">
+                              <button
+                                type="button"
+                                className="bg-green-400 text-gray-900 h-12 w-32 rounded-md transform hover:scale-105 focus:outline-none"
+                                onClick={() => {
+                                  // time travel button
+                                  // dispatches previous state (in Past) to be pushed to Present
+                                  dispatchPosts({
+                                    type: "TIME_TRAVEL",
+                                    payload: {
+                                      formerState: latestState,
+                                      indexInReversePast: index,
+                                    },
+                                  });
+                                }}
+                              >
+                                Time Travel
+                              </button>
+                            </div>
+                          </li>
+                        ))
+                      }
                     </React.Fragment>
                   );
                 }
