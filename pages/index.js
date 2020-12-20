@@ -79,11 +79,11 @@ export default function IndexPage() {
         };
 
   // Store indices as a local ref, this represents the item order
-  const pastArrayOrder = useRef(Present.map((_, index) => index));
+  const pastArrayOrder = useRef(Present?.map((_, index) => index));
 
   // set springs animation on list items
   const [springs, setSprings] = useSprings(
-    Present.length,
+    Present?.length,
     updateSprings(pastArrayOrder.current)
   );
 
