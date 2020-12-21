@@ -65,12 +65,12 @@ export default function IndexPage() {
           scale: 1,
           transform: "translate3d(0,0px,0)",
           shadow: 1,
-          from: {
-            opacity: 0,
-            scale: 0.9,
-            transform: "translate3d(0,-40px,0)",
-            shadow: 15,
-          },
+          // from: {
+          //   opacity: 0,
+          //   scale: 0.9,
+          //   transform: "translate3d(0,-40px,0)",
+          //   shadow: 15,
+          // },
         }
       : {
           opacity: 1,
@@ -89,7 +89,7 @@ export default function IndexPage() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen w-full mb-10 md:mb-0 bg-gray-50">
+    <div className="flex flex-col min-h-screen w-full bg-gray-50">
       {/* svg triangle header */}
       <div className="flex w-full h-40">
         <svg
@@ -110,7 +110,7 @@ export default function IndexPage() {
         </svg>
       </div>
       {/* main content container */}
-      <div className="flex flex-col md:flex-row w-full -mt-32 justify-center space-y-10 md:space-x-16 ">
+      <div className="flex flex-col md:flex-row w-full -mt-32 justify-center space-y-10 md:space-x-16 mb-auto">
         {/* sortable post list */}
         <div className="flex flex-col w-11/12 md:w-5/12 mx-auto md:mx-0 ">
           <h3 className="text-2xl text-white font-semibold">
@@ -347,8 +347,8 @@ export default function IndexPage() {
           </ul>
         </div>
       </div>
-      <footer className="flex items-center justify-between leading-none p-2 md:p-4 h-14 mt-auto">
-        <p className="text-grey-darker text-lg mx-auto">
+      <footer className="flex items-center justify-between leading-none p-2 md:p-4 h-14 mt-auto md:fixed md:bottom-0.5  w-full">
+        <p className="text-grey-darker text-base mx-auto">
           &copy;{new Date().getFullYear()}&nbsp;
           <Link href="http://www.muguku.co.ke/">
             <a className="hover:underline text-purple-800" target="_blank">
