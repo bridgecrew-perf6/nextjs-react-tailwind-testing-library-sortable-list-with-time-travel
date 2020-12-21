@@ -122,6 +122,7 @@ export default function IndexPage() {
                 className="flex w-4/12 h-3/6 md:w-8/12 md:h-3/6 mx-auto mt-6 md:my-auto"
                 src={LoaderImage}
                 alt="loader indicator"
+                data-testid="loader-component"
               />
             ) : (
               springs.map((props, index) => (
@@ -129,6 +130,7 @@ export default function IndexPage() {
                   key={Present[index].id}
                   className="flex flex-row flex-nowrap justify-between w-full h-20 items-center p-2 text-gray-600 bg-white rounded-md shadow-xl"
                   style={props}
+                  data-testid={`sortable-post-list-${index}`}
                 >
                   <div>
                     <h3>{`${Present[index].id}: ${Present[index].title}`}</h3>
@@ -142,6 +144,7 @@ export default function IndexPage() {
                         fill="currentColor"
                         className="text-purple-900 w-5 h-5 transform cursor-pointer hover:scale-125"
                         onClick={() => moveListItem("UP", index)}
+                        data-testid={`arrow-up-${index}`}
                       >
                         <path
                           fillRule="evenodd"
@@ -158,6 +161,7 @@ export default function IndexPage() {
                         fill="currentColor"
                         className="text-purple-900 w-5 h-5 transform cursor-pointer hover:scale-125"
                         onClick={() => moveListItem("DOWN", index)}
+                        data-testid={`arrow-down-${index}`}
                       >
                         <path
                           fillRule="evenodd"
@@ -220,6 +224,8 @@ export default function IndexPage() {
                     <button
                       type="button"
                       className="bg-green-400 text-gray-900 h-12 w-32 rounded-md transform hover:scale-105 focus:outline-none"
+                      // index zero because it represents most latest action
+                      data-testid={`time-travel-${0}`}
                       onClick={() => {
                         // time travel button
                         // dispatches previous state (in Past) to be pushed to Present
@@ -300,6 +306,8 @@ export default function IndexPage() {
                               <button
                                 type="button"
                                 className="bg-green-400 text-gray-900 h-12 w-32 rounded-md transform hover:scale-105 focus:outline-none"
+                                // increment index by one since index zero is already taken by button in first loop above
+                                data-testid={`time-travel-${index + 1}`}
                                 onClick={() => {
                                   // time travel button
                                   // dispatches previous state (in Past) to be pushed to Present
