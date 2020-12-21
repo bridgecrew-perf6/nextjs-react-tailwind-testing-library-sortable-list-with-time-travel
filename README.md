@@ -39,6 +39,7 @@ git clone https://github.com/machariamuguku/nextjs-react-tailwind-testing-librar
 
 cd nextjs-react-tailwind-testing-library-sortable-list-with-time-travel
 yarn #Install dependencies
+yarn test # Run Tests
 yarn dev #Run the app on the browser
 ```
 
