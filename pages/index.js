@@ -3,6 +3,7 @@ import { fetchPosts } from "../api/fetchPosts";
 import { PostsContext } from "../components/globalState";
 import LoaderImage from "../assets/bars.svg";
 import { useSprings, animated } from "react-spring";
+import Link from "next/link";
 
 export default function IndexPage() {
   const [loading, setLoading] = useState(false);
@@ -346,6 +347,17 @@ export default function IndexPage() {
           </ul>
         </div>
       </div>
+      <footer className="flex items-center justify-between leading-none p-2 md:p-4 h-14 mt-auto">
+        <p className="text-grey-darker text-lg mx-auto">
+          &copy;{new Date().getFullYear()}&nbsp;
+          <Link href="http://www.muguku.co.ke/">
+            <a className="hover:underline text-purple-800" target="_blank">
+              Macharia Muguku.{" "}
+            </a>
+          </Link>
+          All rights reserved.
+        </p>
+      </footer>
     </div>
   );
 }
