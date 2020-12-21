@@ -32,15 +32,18 @@ Deployed on [Netlify Here](https://state-time-travel.netlify.app/).
 
 ## Installation & Usage
 
-clone, install dependencies and run
+clone, install dependencies, run tests, run in dev
 
 ```bash
 git clone https://github.com/machariamuguku/nextjs-react-tailwind-testing-library-sortable-list-with-time-travel
 
 cd nextjs-react-tailwind-testing-library-sortable-list-with-time-travel
+
 yarn #Install dependencies
+
 yarn test # Run Tests
-yarn dev #Run the app on the browser
+
+yarn dev #Run the app locally on the browser
 ```
 
 ## License
