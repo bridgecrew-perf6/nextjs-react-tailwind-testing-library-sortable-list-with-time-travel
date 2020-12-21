@@ -1,29 +1,50 @@
-# Tailwind CSS example
+# Next.js, React, Tailwind CSS, React-Spring, React Testing Library Sortable List With Time Travel
 
-This is an example of using [Tailwind CSS](https://tailwindcss.com) in a Next.js project.
+[![Project Screenshot 1][product-screenshot-1]](http://www.muguku.co.ke/)
 
-## Deploy your own
+[![Project Screenshot 2][product-screenshot-2]](http://www.muguku.co.ke/)
 
-Deploy the example using [Vercel](https://vercel.com):
+1 . Displays the first 5 posts from [Json Placeholder](https://jsonplaceholder.typicode.com)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss)
+2 . The order of these posts can be changed by clicking on the up/down arrow keys.
 
-## How to use
+3 . Each ordering action taken is listed in the panel on the right.
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+4 . A user can time travel to a previous state by clicking on the time travel button.
+
+5 . Styling with Tailwind.
+
+6 . Testing with React Testing Library and Jest.
+
+7 . Powered by Next.js
+
+Deployed on [Netlify Here](https://state-time-travel.netlify.app/).
+
+## Technologies
+
+- [Next.js](https://nextjs.org/)
+- [React](https://reactjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [React-Spring](https://www.react-spring.io/)
+- [React Testing Library](https://testing-library.com/)
+- [Jest](https://jestjs.io/)
+- [Json Placeholder API](https://jsonplaceholder.typicode.com)
+
+## Installation & Usage
+
+clone, install dependencies and run
 
 ```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-# or
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
+git clone https://github.com/machariamuguku/nextjs-react-tailwind-testing-library-sortable-list-with-time-travel
+
+cd nextjs-react-tailwind-testing-library-sortable-list-with-time-travel
+yarn #Install dependencies
+yarn dev #Run the app on the browser
 ```
 
-Deploy it to the cloud with [Vercel](https://vercel.com/import?filter=next.js&utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+## License
 
-## Notes
+[MIT](https://choosealicense.com/licenses/mit/)
 
-This example is a basic starting point for using [Tailwind CSS](https://tailwindcss.com) with Next.js. It includes the following [PostCSS](https://github.com/postcss/postcss) plugins:
-
-- [postcss-preset-env](https://preset-env.cssdb.org/) - Adds stage 2+ features and autoprefixes
-
-To control the generated stylesheet's filesize, this example uses Tailwind CSS' [`purge` option](https://tailwindcss.com/docs/controlling-file-size/#removing-unused-css) to remove unused CSS.
+[product-screenshot-1]: screenshots/1.png
+[product-screenshot-2]: screenshots/2.png
