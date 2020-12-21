@@ -1,4 +1,4 @@
-import { render, fireEvent } from "../test-config/test-utils";
+import { render, fireEvent, waitFor } from "../test-config/test-utils";
 import App from "../pages/index";
 import { demoData } from "../test-config/demoData";
 
@@ -27,8 +27,10 @@ describe("renders appropriately", () => {
 
     const { getByTestId } = render(<App />);
 
-    // loader component has a data-testid
-    expect(getByTestId("loader-component")).toBeInTheDocument();
+    await waitFor(() =>
+      // loader component has a data-testid
+      expect(getByTestId("loader-component")).toBeInTheDocument()
+    );
   });
 
   it("fetches and renders a list", async () => {
