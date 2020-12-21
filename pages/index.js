@@ -66,10 +66,10 @@ export default function IndexPage() {
           transform: "translate3d(0,0px,0)",
           shadow: 1,
           from: {
-            opacity: 1,
-            scale: 1,
-            transform: "translate3d(0,0px,0)",
-            shadow: 1,
+            opacity: 0,
+            scale: 0.9,
+            transform: "translate3d(0,-40px,0)",
+            shadow: 15,
           },
         }
       : {
