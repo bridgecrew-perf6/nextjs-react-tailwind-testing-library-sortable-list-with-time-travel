@@ -26,12 +26,12 @@ export default function IndexPage() {
           type: "INITIAL_FETCH",
           payload: data,
         });
-        // finish loading
-        setLoading(false);
       })
       // catch error
       .catch((error) => {
         alert(error);
+      })
+      .finally(() => {
         // finish loading
         setLoading(false);
       });
