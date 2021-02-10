@@ -4,6 +4,8 @@
 
 [![Project Screenshot 2][product-screenshot-2]](http://www.muguku.co.ke/)
 
+0 . [Linked-in post on what I learnt doing this Project](https://www.linkedin.com/posts/machariamuguku_i-built-a-reorder-able-list-with-time-travel-activity-6746778104334704640-5tO_)
+
 1 . Displays the first 5 posts from [Json Placeholder](https://jsonplaceholder.typicode.com)
 
 2 . The order of these posts can be changed by clicking on the up/down arrow keys.
